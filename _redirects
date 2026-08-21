@@ -1,0 +1,7 @@
+# Cloudflare Pages ทำ clean URL ให้เองอยู่แล้ว:
+#   /admin      -> เสิร์ฟจาก admin.html
+#   /admin.html -> 308 กลับไป /admin  (เข้าตรง ๆ ไม่ได้)
+# ห้ามเพิ่มกฎ /admin -> /admin.html เองเด็ดขาด จะกลายเป็น redirect วน
+
+# กัน path ที่ไม่มีอยู่จริงให้กลับหน้าแรกแทนหน้า 404 เปล่า ๆ
+/index.html   /   301

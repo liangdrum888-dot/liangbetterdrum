@@ -1,0 +1,19 @@
+# ผลลัพธ์ที่สร้างใหม่ได้เสมอด้วย tools/make_dist.py
+dist/
+
+# ไฟล์ระบบ / เครื่องมือ
+.DS_Store
+node_modules/
+*.log
+
+# ห้าม commit ไฟล์ credential ทุกชนิด
+*.rtf
+.env
+.env.*
+secret*
+Secret*
+*.pem
+*.key
+
+# cache ของ wrangler
+.wrangler/

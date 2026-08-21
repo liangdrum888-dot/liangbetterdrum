@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>หลังบ้าน — ครูเลี้ยง</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Inter:wght@300;400;500;600&family=IBM+Plex+Sans+Thai:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='none' stroke='%23c9a961' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%23c9a961'/%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#101215; --bg-2:#14171b; --surface:#191d22; --surface-2:#1f242a;
+  --line:rgba(255,255,255,.09); --line-soft:rgba(255,255,255,.05);
+  --gold:#c9a961; --gold-2:#e5cf9a; --gold-dim:rgba(201,169,97,.14);
+  --text:#ece9e3; --muted:#9c988e; --muted-2:#6f6c66;
+  --ok:#7fc79b; --bad:#e0736d;
+  --sans:"Inter","IBM Plex Sans Thai",-apple-system,BlinkMacSystemFont,sans-serif;
+  --serif:"Playfair Display",Georgia,serif;
+  --ease:cubic-bezier(.22,.61,.36,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+button,input,textarea,select{font:inherit;color:inherit}
+a{color:var(--gold);text-decoration:none}
+ul{list-style:none}
+
+/* ---------- PIN gate ---------- */
+.gate{min-height:100svh;display:grid;place-items:center;padding:24px;
+  background:radial-gradient(ellipse 55% 45% at 50% 38%,rgba(201,169,97,.09),transparent 65%)}
+.gate__card{width:100%;max-width:380px;background:var(--surface);border:1px solid var(--line);
+  border-radius:20px;padding:44px 36px;text-align:center;box-shadow:0 40px 90px -40px rgba(0,0,0,.85)}
+.gate__mark{width:54px;height:54px;margin:0 auto 22px;border-radius:50%;border:1px solid var(--gold);
+  display:grid;place-items:center;font-family:var(--serif);color:var(--gold);font-size:19px;
+  background:radial-gradient(circle at 30% 25%,rgba(201,169,97,.22),transparent 70%)}
+.gate h1{font-family:var(--serif);font-size:25px;font-weight:500;margin-bottom:6px}
+.gate p{color:var(--muted);font-size:14px;margin-bottom:28px}
+.pin{width:100%;text-align:center;font-size:30px;letter-spacing:.55em;text-indent:.55em;
+  background:var(--bg-2);border:1px solid var(--line);border-radius:12px;padding:16px 12px;
+  transition:border-color .3s var(--ease)}
+.pin:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,169,97,.12)}
+.pin.shake{animation:shake .4s}
+@keyframes shake{25%{transform:translateX(-7px)}50%{transform:translateX(7px)}75%{transform:translateX(-4px)}}
+
+/* ---------- shell ---------- */
+.shell{display:none;min-height:100svh;grid-template-columns:250px 1fr}
+.shell.is-on{display:grid}
+.side{background:var(--bg-2);border-right:1px solid var(--line-soft);padding:26px 18px;
+  display:flex;flex-direction:column;gap:6px;position:sticky;top:0;height:100svh;overflow-y:auto}
+.side__brand{display:flex;align-items:center;gap:11px;padding:0 8px 22px;margin-bottom:8px;border-bottom:1px solid var(--line-soft)}
+.side__brand span:first-child{width:34px;height:34px;border-radius:50%;border:1px solid var(--gold);flex-shrink:0;
+  display:grid;place-items:center;font-family:var(--serif);color:var(--gold);font-size:13px}
+.side__brand b{display:block;font-family:var(--serif);font-weight:500;font-size:15px}
+.side__brand small{color:var(--muted-2);font-size:10px;letter-spacing:.2em;text-transform:uppercase}
+.tab{display:flex;align-items:center;gap:11px;padding:11px 14px;border-radius:10px;border:0;background:none;
+  cursor:pointer;color:var(--muted);text-align:left;width:100%;transition:all .25s var(--ease);font-size:14.5px}
+.tab:hover{background:var(--surface);color:var(--text)}
+.tab.is-active{background:var(--gold-dim);color:var(--gold-2);font-weight:600}
+.tab i{font-style:normal;width:20px;text-align:center;opacity:.9}
+.side__foot{margin-top:auto;padding-top:18px;border-top:1px solid var(--line-soft);display:grid;gap:8px}
+.side__foot a,.side__foot button{font-size:13px;color:var(--muted);background:none;border:0;cursor:pointer;
+  text-align:left;padding:7px 14px;border-radius:8px;transition:all .25s var(--ease)}
+.side__foot a:hover,.side__foot button:hover{background:var(--surface);color:var(--text)}
+
+.main{padding:34px 38px 70px;max-width:1180px}
+.main__head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:30px}
+.main__head h2{font-family:var(--serif);font-weight:500;font-size:30px}
+.main__head p{color:var(--muted);font-size:14px;margin-top:4px}
+
+.panel{display:none}
+.panel.is-on{display:block}
+.block{background:var(--surface);border:1px solid var(--line-soft);border-radius:16px;margin-bottom:26px;overflow:hidden}
+.block__head{display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:20px 24px;border-bottom:1px solid var(--line-soft);flex-wrap:wrap}
+.block__head h3{font-family:var(--serif);font-weight:500;font-size:19px}
+.block__head small{display:block;color:var(--muted-2);font-size:12.5px;margin-top:2px}
+
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:100px;border:1px solid transparent;
+  font-size:13px;font-weight:600;cursor:pointer;transition:all .3s var(--ease);white-space:nowrap}
+.btn--gold{background:linear-gradient(135deg,var(--gold-2),var(--gold));color:#14100a}
+.btn--gold:hover{transform:translateY(-1px);box-shadow:0 10px 26px -12px rgba(201,169,97,.7)}
+.btn--ghost{border-color:var(--line);color:var(--text);background:rgba(255,255,255,.02)}
+.btn--ghost:hover{border-color:var(--gold);color:var(--gold)}
+.btn--block{width:100%;justify-content:center;padding:14px}
+.btn--sm{padding:7px 14px;font-size:12px}
+.btn--danger{border-color:rgba(224,115,109,.4);color:var(--bad);background:none}
+.btn--danger:hover{background:rgba(224,115,109,.1)}
+.btn[disabled]{opacity:.5;cursor:not-allowed;transform:none!important}
+
+/* ---------- table ---------- */
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th{text-align:left;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-2);
+  font-weight:600;padding:13px 24px;border-bottom:1px solid var(--line-soft);white-space:nowrap}
+.tbl td{padding:15px 24px;border-bottom:1px solid var(--line-soft);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:0}
+.tbl tbody tr{transition:background .25s var(--ease)}
+.tbl tbody tr:hover{background:var(--surface-2)}
+.tbl .num{color:var(--muted-2);font-size:13px;width:60px}
+.tbl .name{font-weight:500}
+.tbl .name small{display:block;color:var(--muted);font-weight:400;font-size:12.5px;margin-top:3px;
+  max-width:52ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tbl .acts{text-align:right;white-space:nowrap;width:1%}
+.tbl .acts .btn{margin-left:6px}
+.pill{display:inline-block;padding:3px 11px;border-radius:100px;font-size:11px;letter-spacing:.04em;
+  border:1px solid var(--line);color:var(--muted);cursor:pointer;transition:all .25s var(--ease);background:none}
+.pill--on{background:rgba(127,199,155,.13);border-color:rgba(127,199,155,.4);color:var(--ok)}
+.pill--best{background:var(--gold-dim);border-color:rgba(201,169,97,.45);color:var(--gold-2);cursor:default}
+.empty{padding:44px 24px;text-align:center;color:var(--muted-2);font-size:14px}
+
+/* ---------- fields ---------- */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.field{margin-bottom:18px}
+.field label{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.field input[type=text],.field input[type=number],.field textarea,.field select{
+  width:100%;background:var(--bg-2);border:1px solid var(--line);border-radius:10px;padding:12px 14px;
+  font-size:14.5px;transition:all .25s var(--ease)}
+.field input:focus,.field textarea:focus,.field select:focus{
+  outline:none;border-color:var(--gold);background:var(--surface);box-shadow:0 0 0 3px rgba(201,169,97,.1)}
+.field textarea{min-height:110px;resize:vertical;line-height:1.65}
+.field select{appearance:none;cursor:pointer}
+.check{display:flex;align-items:center;gap:10px;color:var(--text);font-size:14px;cursor:pointer}
+.check input{width:17px;height:17px;accent-color:var(--gold);cursor:pointer}
+.up{display:grid;gap:12px}
+.up__row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.up__row .btn{cursor:pointer}
+.up__msg{font-size:12.5px;color:var(--muted-2);flex:1;min-width:200px}
+.up__bar{height:6px;border-radius:100px;background:var(--bg-2);overflow:hidden;border:1px solid var(--line)}
+.up__bar i{display:block;height:100%;width:0;border-radius:100px;
+  background:linear-gradient(90deg,var(--gold),var(--gold-2));transition:width .2s linear}
+.up__prev{width:100%;max-height:230px;border-radius:10px;background:#000;border:1px solid var(--line)}
+
+.settings-form{padding:24px}
+.settings-form .field:last-of-type{margin-bottom:22px}
+
+/* ---------- modal ---------- */
+.modal{position:fixed;inset:0;z-index:100;display:none;place-items:center;padding:24px;
+  background:rgba(8,9,11,.78);backdrop-filter:blur(6px)}
+.modal.is-on{display:grid}
+.modal__card{width:100%;max-width:680px;max-height:88svh;overflow-y:auto;background:var(--surface);
+  border:1px solid var(--line);border-radius:18px;padding:32px}
+.modal__card h3{font-family:var(--serif);font-weight:500;font-size:23px;margin-bottom:24px}
+.modal__foot{display:flex;gap:12px;justify-content:flex-end;margin-top:26px;padding-top:22px;border-top:1px solid var(--line-soft)}
+
+/* ---------- toast ---------- */
+.toast{position:fixed;left:50%;bottom:32px;translate:-50% 0;z-index:200;padding:13px 24px;border-radius:100px;
+  background:var(--surface-2);border:1px solid var(--line);font-size:14px;opacity:0;pointer-events:none;
+  transition:opacity .3s var(--ease),transform .3s var(--ease)}
+.toast.is-on{opacity:1;transform:translateY(-6px)}
+.toast--ok{border-color:rgba(127,199,155,.45);color:var(--ok)}
+.toast--bad{border-color:rgba(224,115,109,.5);color:var(--bad)}
+
+.note{font-size:13px;color:var(--muted-2);line-height:1.7}
+.note code{background:var(--bg-2);padding:2px 6px;border-radius:5px;color:var(--gold);font-size:12.5px}
+.status{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--muted)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--muted-2)}
+.dot--ok{background:var(--ok)}.dot--bad{background:var(--bad)}
+
+@media (max-width:860px){
+  .shell.is-on{grid-template-columns:1fr}
+  .side{position:static;height:auto;flex-direction:row;flex-wrap:wrap;gap:6px;padding:14px}
+  .side__brand{width:100%;padding-bottom:14px}
+  .tab{width:auto;padding:9px 13px}
+  .side__foot{margin:0;width:100%;border-top:0;padding-top:0;grid-auto-flow:column;justify-content:start}
+  .main{padding:24px 18px 60px}
+  .grid2{grid-template-columns:1fr}
+  .tbl th:nth-child(2),.tbl td:nth-child(2){display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ PIN gate ============ -->
+<div class="gate" id="gate">
+  <div class="gate__card">
+    <div class="gate__mark">SL</div>
+    <h1>ระบบหลังบ้าน</h1>
+    <p>ใส่รหัส PIN 6 หลักเพื่อเข้าจัดการเนื้อหา</p>
+    <form id="pin-form" autocomplete="off">
+      <input class="pin" id="pin-input" type="password" inputmode="numeric" pattern="[0-9]*"
+             maxlength="6" placeholder="******" aria-label="PIN" autocomplete="off">
+      <p class="note" id="pin-msg" style="min-height:22px;margin:14px 0 6px"></p>
+      <button class="btn btn--gold btn--block" type="submit" id="pin-btn">เข้าสู่ระบบ</button>
+    </form>
+    <p class="note" style="margin-top:22px"><a href="/">← กลับหน้าเว็บ</a></p>
+  </div>
+</div>
+
+<!-- ============ dashboard ============ -->
+<div class="shell" id="shell">
+  <aside class="side">
+    <div class="side__brand">
+      <span>SL</span>
+      <span><b>ครูเลี้ยง</b><small>Admin</small></span>
+    </div>
+    <button class="tab is-active" data-panel="home"><i>◆</i> หน้าแรก</button>
+    <button class="tab" data-panel="profile"><i>◆</i> ประวัติ</button>
+    <button class="tab" data-panel="lesson"><i>◆</i> บทเรียน</button>
+    <button class="tab" data-panel="contact"><i>◆</i> ติดต่อ</button>
+    <button class="tab" data-panel="system"><i>◆</i> ตั้งค่าระบบ</button>
+    <div class="side__foot">
+      <div class="status" style="padding:7px 14px"><span class="dot" id="conn-dot"></span><span id="conn-txt">กำลังเชื่อมต่อ…</span></div>
+      <a href="/" target="_blank">ดูหน้าเว็บจริง ↗</a>
+      <button type="button" id="logout">ออกจากระบบ</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="main__head">
+      <div>
+        <h2 id="panel-title">หน้าแรก</h2>
+        <p id="panel-sub">แก้ข้อความบนหน้าแรก และจัดการรีวิวจากนักเรียน</p>
+      </div>
+    </div>
+
+    <section class="panel is-on" data-panel="home">
+      <div class="block" data-settings="hero_eyebrow,hero_role,hero_text,about_p1,about_p2"></div>
+      <div class="block" data-collection="site_testimonials"></div>
+    </section>
+
+    <section class="panel" data-panel="profile">
+      <div class="block" data-settings="profile_bio_1,profile_bio_2,profile_bio_3"></div>
+      <div class="block" data-collection="site_timeline"></div>
+    </section>
+
+    <section class="panel" data-panel="lesson">
+      <div class="block" data-collection="site_lessons"></div>
+      <div class="block" data-collection="site_packages"></div>
+      <div class="block" data-settings="promo_lead,promo_note"></div>
+    </section>
+
+    <section class="panel" data-panel="contact">
+      <div class="block" data-settings="contact_email,contact_phone,contact_hours,contact_place"></div>
+      <div class="block" data-collection="site_faq"></div>
+    </section>
+
+    <section class="panel" data-panel="system">
+      <div class="block">
+        <div class="block__head"><div><h3>เปลี่ยนรหัส PIN</h3><small>ต้องใส่รหัสเดิมเพื่อยืนยัน</small></div></div>
+        <form class="settings-form" id="pin-change">
+          <div class="grid2">
+            <div class="field"><label>รหัสเดิม</label><input type="text" inputmode="numeric" maxlength="6" name="old" autocomplete="off"></div>
+            <div class="field"><label>รหัสใหม่ (6 หลัก)</label><input type="text" inputmode="numeric" maxlength="6" name="neo" autocomplete="off"></div>
+          </div>
+          <button class="btn btn--gold" type="submit">บันทึกรหัสใหม่</button>
+        </form>
+      </div>
+      <div class="block">
+        <div class="block__head"><div><h3>การเชื่อมต่อ</h3><small>สถานะฐานข้อมูล Supabase</small></div></div>
+        <div class="settings-form">
+          <p class="note" id="sys-info">—</p>
+          <p class="note" style="margin-top:16px">
+            เนื้อหาที่แก้ที่นี่จะขึ้นบนหน้าเว็บทันทีที่ผู้เข้าชมโหลดหน้าใหม่
+            ถ้าฐานข้อมูลล่มหรือยังไม่ได้รันไฟล์ <code>supabase/schema.sql</code>
+            หน้าเว็บจะแสดงเนื้อหาสำรองที่ฝังมากับไฟล์ HTML แทน ไม่พังทั้งเว็บ
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- ============ modal ============ -->
+<div class="modal" id="modal">
+  <div class="modal__card">
+    <h3 id="modal-title">แก้ไข</h3>
+    <form id="modal-form"></form>
+    <div class="modal__foot">
+      <button class="btn btn--ghost" type="button" id="modal-cancel">ยกเลิก</button>
+      <button class="btn btn--gold" type="button" id="modal-save">บันทึก</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="assets/js/supabase-config.js"></script>
+<script src="assets/js/db.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  /* ============ config: what each collection looks like ============ */
+  var T = {
+    site_lessons: {
+      title: "บทเรียน", sub: "การ์ดวิดีโอในหน้า Lesson และ 3 อันแรกบนหน้าแรก",
+      add: "เพิ่มบทเรียน",
+      cols: [
+        { k: "sort", cls: "num" },
+        { k: "level", render: function (r) { return LV[r.level] || r.level; } },
+        { k: "title_th", cls: "name", sub: "desc_th" },
+        { k: "duration" },
+        { k: "video_url", raw: true, render: function (r) {
+            if (!r.video_url) return '<span style="color:var(--muted-2)">—</span>';
+            return '<a href="' + esc(r.video_url) + '" target="_blank" rel="noopener" class="pill pill--on">มีวิดีโอ</a>';
+          } }
+      ],
+      head: ["ลำดับ", "ระดับ", "ชื่อบทเรียน", "ความยาว", "วิดีโอ", ""],
+      fields: [
+        { k: "title_th", label: "ชื่อบทเรียน (ไทย)", type: "text", req: true },
+        { k: "title_en", label: "ชื่อบทเรียน (English)", type: "text" },
+        { k: "desc_th", label: "คำอธิบาย (ไทย)", type: "textarea" },
+        { k: "desc_en", label: "คำอธิบาย (English)", type: "textarea" },
+        { k: "level", label: "ระดับ", type: "select", opts: [["beginner", "เริ่มต้น"], ["intermediate", "ระดับกลาง"], ["advanced", "ขั้นสูง"]] },
+        { k: "category", label: "หมวด", type: "select", opts: [["groove", "กรูฟ"], ["technique", "เทคนิค"], ["reading", "อ่านโน้ต"]] },
+        { k: "duration", label: "ความยาว เช่น 14:52", type: "text" },
+        { k: "video_url", label: "วิดีโอ", type: "video" },
+        { k: "sort", label: "ลำดับการแสดง (น้อย = ขึ้นก่อน)", type: "number" },
+        { k: "published", label: "เผยแพร่บนเว็บ", type: "bool" }
+      ]
+    },
+    site_packages: {
+      title: "แพ็กเกจ / ราคา", sub: "ตารางราคาท้ายหน้า Lesson",
+      add: "เพิ่มแพ็กเกจ",
+      cols: [
+        { k: "sort", cls: "num" },
+        { k: "name", cls: "name", sub: "sub_th" },
+        { k: "price" },
+        { k: "is_best", render: function (r) { return r.is_best ? '<span class="pill pill--best">คุ้มสุด</span>' : ""; }, raw: true }
+      ],
+      head: ["ลำดับ", "แพ็กเกจ", "ราคา", "ป้าย", ""],
+      fields: [
+        { k: "name", label: "ชื่อแพ็กเกจ เช่น 10 Lessons", type: "text", req: true },
+        { k: "sub_th", label: "คำอธิบาย (ไทย)", type: "text" },
+        { k: "sub_en", label: "คำอธิบาย (English)", type: "text" },
+        { k: "price", label: "ราคา เช่น 9,000฿", type: "text", req: true },
+        { k: "price_was", label: "ราคาก่อนลด (เว้นว่างได้)", type: "text" },
+        { k: "save_th", label: "ข้อความประหยัด (ไทย)", type: "text" },
+        { k: "save_en", label: "ข้อความประหยัด (English)", type: "text" },
+        { k: "is_best", label: "ติดป้าย คุ้มสุด", type: "bool" },
+        { k: "sort", label: "ลำดับการแสดง", type: "number" },
+        { k: "published", label: "เผยแพร่บนเว็บ", type: "bool" }
+      ]
+    },
+    site_faq: {
+      title: "คำถามที่พบบ่อย", sub: "แสดงในหน้า Contact",
+      add: "เพิ่มคำถาม",
+      cols: [{ k: "sort", cls: "num" }, { k: "q_th", cls: "name", sub: "a_th" }],
+      head: ["ลำดับ", "คำถาม", ""],
+      fields: [
+        { k: "q_th", label: "คำถาม (ไทย)", type: "text", req: true },
+        { k: "q_en", label: "คำถาม (English)", type: "text" },
+        { k: "a_th", label: "คำตอบ (ไทย)", type: "textarea" },
+        { k: "a_en", label: "คำตอบ (English)", type: "textarea" },
+        { k: "sort", label: "ลำดับการแสดง", type: "number" },
+        { k: "published", label: "เผยแพร่บนเว็บ", type: "bool" }
+      ]
+    },
+    site_testimonials: {
+      title: "รีวิวนักเรียน", sub: "การ์ดคำชมบนหน้าแรก",
+      add: "เพิ่มรีวิว",
+      cols: [{ k: "sort", cls: "num" }, { k: "person", cls: "name", sub: "quote_th" }, { k: "role_th" }],
+      head: ["ลำดับ", "ชื่อ", "แนะนำตัว", ""],
+      fields: [
+        { k: "person", label: "ชื่อผู้รีวิว", type: "text", req: true },
+        { k: "role_th", label: "แนะนำตัวสั้น ๆ (ไทย)", type: "text" },
+        { k: "role_en", label: "แนะนำตัวสั้น ๆ (English)", type: "text" },
+        { k: "quote_th", label: "ข้อความรีวิว (ไทย)", type: "textarea" },
+        { k: "quote_en", label: "ข้อความรีวิว (English)", type: "textarea" },
+        { k: "sort", label: "ลำดับการแสดง", type: "number" },
+        { k: "published", label: "เผยแพร่บนเว็บ", type: "bool" }
+      ]
+    },
+    site_timeline: {
+      title: "ไทม์ไลน์", sub: "ประวัติการทำงานในหน้า Profile",
+      add: "เพิ่มช่วงเวลา",
+      cols: [{ k: "sort", cls: "num" }, { k: "year" }, { k: "title_th", cls: "name", sub: "desc_th" }],
+      head: ["ลำดับ", "ปี", "หัวข้อ", ""],
+      fields: [
+        { k: "year", label: "ปี เช่น 2014", type: "text", req: true },
+        { k: "title_th", label: "หัวข้อ (ไทย)", type: "text" },
+        { k: "title_en", label: "หัวข้อ (English)", type: "text" },
+        { k: "desc_th", label: "รายละเอียด (ไทย)", type: "textarea" },
+        { k: "desc_en", label: "รายละเอียด (English)", type: "textarea" },
+        { k: "sort", label: "ลำดับการแสดง", type: "number" },
+        { k: "published", label: "เผยแพร่บนเว็บ", type: "bool" }
+      ]
+    }
+  };
+  var LV = { beginner: "เริ่มต้น", intermediate: "ระดับกลาง", advanced: "ขั้นสูง" };
+  var PANEL_META = {
+    home:    ["หน้าแรก", "แก้ข้อความบนหน้าแรก และจัดการรีวิวจากนักเรียน"],
+    profile: ["ประวัติ", "แก้ประวัติและไทม์ไลน์ในหน้า Profile"],
+    lesson:  ["บทเรียน", "เพิ่ม ลบ แก้ไขบทเรียนและราคาแพ็กเกจ"],
+    contact: ["ติดต่อ", "ข้อมูลติดต่อและคำถามที่พบบ่อย"],
+    system:  ["ตั้งค่าระบบ", "รหัสผ่านและสถานะการเชื่อมต่อ"]
+  };
+
+  /* ============ helpers ============ */
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var PIN = null;
+  var settingsCache = {};
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  var toastTimer;
+  function toast(msg, kind) {
+    var t = $("#toast");
+    t.textContent = msg;
+    t.className = "toast is-on toast--" + (kind || "ok");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.className = "toast"; }, 3200);
+  }
+  function friendly(err) {
+    var m = (err && err.message) || "เกิดข้อผิดพลาด";
+    if (/FORBIDDEN/.test(m)) return "รหัส PIN ไม่ถูกต้อง กรุณาเข้าสู่ระบบใหม่";
+    if (/LOCKED/.test(m)) return "ใส่รหัสผิดหลายครั้งเกินไป รอ 15 นาทีแล้วลองใหม่";
+    if (/schema cache|does not exist/i.test(m)) return "ยังไม่ได้สร้างตารางในฐานข้อมูล — รัน supabase/schema.sql ก่อน";
+    return m;
+  }
+
+  /* ============ PIN gate ============ */
+  var SKEY = "slw-admin-pin";
+
+  $("#pin-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var input = $("#pin-input");
+    var pin = input.value.trim();
+    var msg = $("#pin-msg");
+    if (!/^\d{6}$/.test(pin)) {
+      msg.textContent = "รหัสต้องเป็นตัวเลข 6 หลัก";
+      input.classList.add("shake");
+      setTimeout(function () { input.classList.remove("shake"); }, 400);
+      return;
+    }
+    var btn = $("#pin-btn");
+    btn.disabled = true;
+    msg.textContent = "กำลังตรวจสอบ…";
+
+    window.DB.rpc("admin_check_pin", { p_pin: pin }).then(function (ok) {
+      btn.disabled = false;
+      if (ok === true) {
+        PIN = pin;
+        try { sessionStorage.setItem(SKEY, pin); } catch (e) {}
+        input.value = "";
+        msg.textContent = "";
+        openDashboard();
+      } else {
+        msg.textContent = "รหัสไม่ถูกต้อง";
+        input.value = "";
+        input.classList.add("shake");
+        setTimeout(function () { input.classList.remove("shake"); }, 400);
+      }
+    }).catch(function (err) {
+      btn.disabled = false;
+      msg.textContent = friendly(err);
+    });
+  });
+
+  function logout() {
+    PIN = null;
+    try { sessionStorage.removeItem(SKEY); } catch (e) {}
+    $("#shell").classList.remove("is-on");
+    $("#gate").style.display = "";
+    $("#pin-input").value = "";
+  }
+  $("#logout").addEventListener("click", logout);
+
+  // auto-lock after 30 minutes with no activity
+  var idle;
+  function resetIdle() {
+    clearTimeout(idle);
+    idle = setTimeout(function () { if (PIN) { logout(); toast("ล็อกอัตโนมัติหลังไม่ได้ใช้งาน 30 นาที", "bad"); } }, 30 * 60 * 1000);
+  }
+  ["click", "keydown", "mousemove"].forEach(function (ev) { document.addEventListener(ev, resetIdle, { passive: true }); });
+
+  /* ============ dashboard ============ */
+  function openDashboard() {
+    $("#gate").style.display = "none";
+    $("#shell").classList.add("is-on");
+    resetIdle();
+    setConn(true, "เชื่อมต่อแล้ว");
+    $("#sys-info").innerHTML =
+      "โปรเจกต์: <code>" + esc((window.SUPABASE_URL || "").replace("https://", "").split(".")[0]) + "</code><br>" +
+      "ตารางที่จัดการได้: <code>" + Object.keys(T).join("</code> <code>") + "</code>";
+    loadAll();
+  }
+  function setConn(ok, txt) {
+    $("#conn-dot").className = "dot " + (ok ? "dot--ok" : "dot--bad");
+    $("#conn-txt").textContent = txt;
+  }
+
+  $$(".tab").forEach(function (tab) {
+    tab.addEventListener("click", function () {
+      var name = tab.getAttribute("data-panel");
+      $$(".tab").forEach(function (t) { t.classList.toggle("is-active", t === tab); });
+      $$(".panel").forEach(function (p) { p.classList.toggle("is-on", p.getAttribute("data-panel") === name); });
+      $("#panel-title").textContent = PANEL_META[name][0];
+      $("#panel-sub").textContent = PANEL_META[name][1];
+      window.scrollTo(0, 0);
+    });
+  });
+
+  /* ---------- collections ---------- */
+  function loadAll() {
+    $$("[data-collection]").forEach(function (box) { loadCollection(box); });
+    loadSettings();
+  }
+
+  function loadCollection(box) {
+    var table = box.getAttribute("data-collection");
+    var cfg = T[table];
+    box.innerHTML =
+      '<div class="block__head"><div><h3>' + esc(cfg.title) + '</h3><small>' + esc(cfg.sub) + '</small></div>' +
+      '<button class="btn btn--gold btn--sm" data-add="' + table + '">+ ' + esc(cfg.add) + '</button></div>' +
+      '<div class="empty">กำลังโหลด…</div>';
+
+    window.DB.rpc("admin_list", { p_pin: PIN, p_table: table }).then(function (rows) {
+      renderTable(box, table, rows || []);
+    }).catch(function (err) {
+      setConn(false, "เชื่อมต่อไม่ได้");
+      $(".empty", box).textContent = friendly(err);
+    });
+  }
+
+  function renderTable(box, table, rows) {
+    var cfg = T[table];
+    var old = $(".empty", box) || $(".tbl", box);
+    if (old) old.remove();
+
+    if (!rows.length) {
+      var e = document.createElement("div");
+      e.className = "empty";
+      e.textContent = "ยังไม่มีข้อมูล — กดปุ่ม " + cfg.add + " ด้านบนเพื่อเริ่ม";
+      box.appendChild(e);
+      return;
+    }
+
+    var html = '<table class="tbl"><thead><tr>' +
+      cfg.head.map(function (h) { return "<th>" + esc(h) + "</th>"; }).join("") +
+      "</tr></thead><tbody>";
+
+    rows.forEach(function (r) {
+      html += "<tr>";
+      cfg.cols.forEach(function (c) {
+        var v = c.render ? c.render(r) : r[c.k];
+        var cell = c.raw ? (v || "") : esc(v);
+        if (c.sub && r[c.sub]) cell += "<small>" + esc(r[c.sub]) + "</small>";
+        html += '<td class="' + (c.cls || "") + '">' + cell + "</td>";
+      });
+      html += '<td class="acts">' +
+        '<button class="pill ' + (r.published ? "pill--on" : "") + '" data-toggle="' + r.id + '">' +
+          (r.published ? "เผยแพร่" : "ซ่อนอยู่") + "</button>" +
+        '<button class="btn btn--ghost btn--sm" data-edit="' + r.id + '">แก้ไข</button>' +
+        '<button class="btn btn--danger btn--sm" data-del="' + r.id + '">ลบ</button>' +
+        "</td></tr>";
+    });
+    html += "</tbody></table>";
+
+    var wrap = document.createElement("div");
+    wrap.innerHTML = html;
+    box.appendChild(wrap.firstChild);
+    box._rows = rows;
+  }
+
+  document.addEventListener("click", function (e) {
+    var addBtn = e.target.closest("[data-add]");
+    if (addBtn) return openModal(addBtn.getAttribute("data-add"), null);
+
+    var editBtn = e.target.closest("[data-edit]");
+    if (editBtn) {
+      var box = editBtn.closest("[data-collection]");
+      var row = (box._rows || []).filter(function (r) { return r.id === editBtn.getAttribute("data-edit"); })[0];
+      return openModal(box.getAttribute("data-collection"), row);
+    }
+
+    var delBtn = e.target.closest("[data-del]");
+    if (delBtn) {
+      var box2 = delBtn.closest("[data-collection]");
+      var table = box2.getAttribute("data-collection");
+      var id = delBtn.getAttribute("data-del");
+      var row2 = (box2._rows || []).filter(function (r) { return r.id === id; })[0] || {};
+      var label = row2.title_th || row2.person || row2.name || row2.q_th || row2.year || "รายการนี้";
+      if (!confirm('ลบ "' + label + '" ออกถาวรใช่ไหม?')) return;
+      delBtn.disabled = true;
+      return window.DB.rpc("admin_delete", { p_pin: PIN, p_table: table, p_id: id })
+        .then(function () { toast("ลบแล้ว"); loadCollection(box2); })
+        .catch(function (err) { delBtn.disabled = false; toast(friendly(err), "bad"); });
+    }
+
+    var tog = e.target.closest("[data-toggle]");
+    if (tog) {
+      var box3 = tog.closest("[data-collection]");
+      var table3 = box3.getAttribute("data-collection");
+      var id3 = tog.getAttribute("data-toggle");
+      var row3 = (box3._rows || []).filter(function (r) { return r.id === id3; })[0] || {};
+      tog.disabled = true;
+      return window.DB.rpc("admin_save", { p_pin: PIN, p_table: table3, p_row: { id: id3, published: !row3.published } })
+        .then(function () { toast(row3.published ? "ซ่อนจากหน้าเว็บแล้ว" : "เผยแพร่แล้ว"); loadCollection(box3); })
+        .catch(function (err) { tog.disabled = false; toast(friendly(err), "bad"); });
+    }
+  });
+
+  /* ---------- modal form ---------- */
+  var current = { table: null, row: null };
+
+  function openModal(table, row) {
+    current.table = table;
+    current.row = row;
+    var cfg = T[table];
+    $("#modal-title").textContent = (row ? "แก้ไข" : "เพิ่ม") + " · " + cfg.title;
+
+    var form = $("#modal-form");
+    form.innerHTML = cfg.fields.map(function (f) {
+      var v = row ? row[f.k] : (f.type === "bool" ? true : (f.k === "sort" ? nextSort(table) : ""));
+      if (f.type === "bool") {
+        return '<div class="field"><label class="check"><input type="checkbox" name="' + f.k + '"' +
+               (v ? " checked" : "") + '> <span>' + esc(f.label) + "</span></label></div>";
+      }
+      var head = '<div class="field"><label>' + esc(f.label) + "</label>";
+      if (f.type === "video") {
+        return head +
+          '<div class="up" data-up>' +
+            '<input type="text" name="' + f.k + '" value="' + esc(v) + '" ' +
+              'placeholder="วางลิงก์ YouTube / Vimeo หรือกดอัปโหลดไฟล์">' +
+            '<div class="up__row">' +
+              '<label class="btn btn--ghost btn--sm">เลือกไฟล์วิดีโอ' +
+                '<input type="file" accept="video/mp4,video/webm,video/quicktime,video/x-m4v" hidden data-file></label>' +
+              '<button type="button" class="btn btn--danger btn--sm" data-clear>ลบวิดีโอ</button>' +
+              '<span class="up__msg" data-msg>ไฟล์ mp4 / webm / mov ขนาดไม่เกิน 50 MB</span>' +
+            "</div>" +
+            '<div class="up__bar" data-bar hidden><i></i></div>' +
+            '<video class="up__prev" data-prev controls preload="metadata"' +
+              (window.DB.isPlayable(v) ? ' src="' + esc(v) + '"' : " hidden") + "></video>" +
+          "</div></div>";
+      }
+      if (f.type === "textarea") return head + '<textarea name="' + f.k + '">' + esc(v) + "</textarea></div>";
+      if (f.type === "select") {
+        return head + '<select name="' + f.k + '">' + f.opts.map(function (o) {
+          return '<option value="' + o[0] + '"' + (String(v) === o[0] ? " selected" : "") + ">" + esc(o[1]) + "</option>";
+        }).join("") + "</select></div>";
+      }
+      if (f.type === "number") return head + '<input type="number" name="' + f.k + '" value="' + esc(v) + '"></div>';
+      return head + '<input type="text" name="' + f.k + '" value="' + esc(v) + '"></div>';
+    }).join("");
+
+    $("#modal").classList.add("is-on");
+    wireUpload(form);
+    var first = form.querySelector("input,textarea,select");
+    if (first) first.focus();
+  }
+
+  /* upload widget: file → Supabase Storage → put the URL in the text field */
+  function wireUpload(form) {
+    var box = $("[data-up]", form);
+    if (!box) return;
+    var url = $('input[type="text"]', box);
+    var file = $("[data-file]", box);
+    var msg = $("[data-msg]", box);
+    var bar = $("[data-bar]", box);
+    var prev = $("[data-prev]", box);
+    var clear = $("[data-clear]", box);
+    var uploadedPath = null;           // path uploaded during THIS modal session
+
+    function preview() {
+      if (window.DB.isPlayable(url.value)) { prev.src = url.value; prev.hidden = false; }
+      else { prev.removeAttribute("src"); prev.hidden = true; }
+    }
+    url.addEventListener("change", preview);
+
+    file.addEventListener("change", function () {
+      var f = file.files && file.files[0];
+      if (!f) return;
+      if (f.size > window.DB.MAX_UPLOAD) {
+        msg.textContent = "ไฟล์ใหญ่เกิน 50 MB (" + (f.size / 1048576).toFixed(1) + " MB) — ย่อไฟล์ก่อน หรืออัปขึ้น YouTube แล้ววางลิงก์แทน";
+        file.value = "";
+        return;
+      }
+      var previousPath = window.DB.pathFromUrl(url.value);
+      bar.hidden = false;
+      $("i", bar).style.width = "0%";
+      msg.textContent = "กำลังอัปโหลด " + f.name + " …";
+      $("#modal-save").disabled = true;
+
+      window.DB.uploadVideo(f, PIN, function (p) { $("i", bar).style.width = Math.round(p * 100) + "%"; })
+        .then(function (res) {
+          url.value = res.url;
+          uploadedPath = res.path;
+          preview();
+          msg.textContent = "อัปโหลดเรียบร้อย — กดบันทึกเพื่อผูกกับบทเรียนนี้";
+          bar.hidden = true;
+          $("#modal-save").disabled = false;
+          // ไฟล์เดิมที่ถูกแทนที่ ลบทิ้งไม่ให้ค้างกิน storage
+          if (previousPath && previousPath !== res.path) {
+            window.DB.deleteVideo(previousPath, PIN).catch(function (err) {
+              console.warn("ลบไฟล์เก่าไม่สำเร็จ:", err.message);
+            });
+          }
+        })
+        .catch(function (err) {
+          msg.textContent = friendly(err);
+          bar.hidden = true;
+          $("#modal-save").disabled = false;
+        })
+        .then(function () { file.value = ""; });
+    });
+
+    clear.addEventListener("click", function () {
+      var path = window.DB.pathFromUrl(url.value);
+      if (path && !confirm("ลบไฟล์วิดีโอนี้ออกจากที่เก็บถาวรใช่ไหม?")) return;
+      if (path) {
+        window.DB.deleteVideo(path, PIN)
+          .then(function () { msg.textContent = "ลบไฟล์แล้ว — กดบันทึกเพื่อยืนยัน"; })
+          .catch(function (err) { msg.textContent = "ลบไฟล์ไม่สำเร็จ: " + friendly(err); });
+      }
+      if (uploadedPath === path) uploadedPath = null;
+      url.value = "";
+      preview();
+      msg.textContent = "กำลังลบ…";
+    });
+  }
+
+  function nextSort(table) {
+    var box = $('[data-collection="' + table + '"]');
+    var rows = (box && box._rows) || [];
+    return rows.length ? Math.max.apply(null, rows.map(function (r) { return r.sort || 0; })) + 10 : 10;
+  }
+
+  function closeModal() { $("#modal").classList.remove("is-on"); }
+  $("#modal-cancel").addEventListener("click", closeModal);
+  $("#modal").addEventListener("click", function (e) { if (e.target === $("#modal")) closeModal(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeModal(); });
+
+  $("#modal-save").addEventListener("click", function () {
+    var cfg = T[current.table];
+    var form = $("#modal-form");
+    var payload = {};
+    var missing = null;
+
+    cfg.fields.forEach(function (f) {
+      var node = form.elements[f.k];
+      if (!node) return;
+      var v;
+      if (f.type === "bool") v = node.checked;
+      else if (f.type === "number") v = parseInt(node.value, 10) || 0;
+      else v = node.value.trim();
+      if (f.req && !v) missing = f.label;
+      payload[f.k] = v;
+    });
+    if (missing) return toast("กรอก " + missing + " ก่อน", "bad");
+
+    if (current.row) payload.id = current.row.id;
+    var btn = $("#modal-save");
+    btn.disabled = true;
+
+    window.DB.rpc("admin_save", { p_pin: PIN, p_table: current.table, p_row: payload })
+      .then(function () {
+        btn.disabled = false;
+        closeModal();
+        toast(current.row ? "บันทึกแล้ว" : "เพิ่มแล้ว");
+        loadCollection($('[data-collection="' + current.table + '"]'));
+      })
+      .catch(function (err) { btn.disabled = false; toast(friendly(err), "bad"); });
+  });
+
+  /* ---------- settings blocks ---------- */
+  function loadSettings() {
+    window.DB.select("site_settings", "select=*").then(function (rows) {
+      settingsCache = {};
+      (rows || []).forEach(function (r) { settingsCache[r.key] = r; });
+      $$("[data-settings]").forEach(renderSettings);
+    }).catch(function (err) {
+      $$("[data-settings]").forEach(function (b) {
+        b.innerHTML = '<div class="empty">' + esc(friendly(err)) + "</div>";
+      });
+    });
+  }
+
+  function renderSettings(box) {
+    var keys = box.getAttribute("data-settings").split(",");
+    var html = '<div class="block__head"><div><h3>ข้อความบนหน้า</h3>' +
+               '<small>แก้แล้วกดบันทึก จะขึ้นบนเว็บทันที (ทั้งไทยและอังกฤษ)</small></div></div>' +
+               '<form class="settings-form">';
+    keys.forEach(function (k) {
+      var s = settingsCache[k] || { key: k, label: k, value_en: "", value_th: "" };
+      var long = (s.value_th || "").length > 70;
+      html += '<div class="field"><label>' + esc(s.label || k) + "</label>" +
+        '<div class="grid2">' +
+        (long
+          ? '<textarea data-k="' + k + '" data-lang="th">' + esc(s.value_th) + "</textarea>" +
+            '<textarea data-k="' + k + '" data-lang="en">' + esc(s.value_en) + "</textarea>"
+          : '<input type="text" data-k="' + k + '" data-lang="th" value="' + esc(s.value_th) + '">' +
+            '<input type="text" data-k="' + k + '" data-lang="en" value="' + esc(s.value_en) + '">') +
+        "</div></div>";
+    });
+    html += '<button class="btn btn--gold" type="submit">บันทึกข้อความ</button>' +
+            '<p class="note" style="margin-top:14px">ช่องซ้าย = ภาษาไทย · ช่องขวา = ภาษาอังกฤษ</p></form>';
+    box.innerHTML = html;
+
+    $("form", box).addEventListener("submit", function (e) {
+      e.preventDefault();
+      var btn = $("button[type=submit]", box);
+      btn.disabled = true;
+      var jobs = keys.map(function (k) {
+        var s = settingsCache[k] || { label: k };
+        return window.DB.rpc("admin_save_setting", {
+          p_pin: PIN, p_key: k, p_label: s.label || k,
+          p_th: $('[data-k="' + k + '"][data-lang="th"]', box).value,
+          p_en: $('[data-k="' + k + '"][data-lang="en"]', box).value
+        });
+      });
+      Promise.all(jobs)
+        .then(function () { btn.disabled = false; toast("บันทึกข้อความแล้ว"); loadSettings(); })
+        .catch(function (err) { btn.disabled = false; toast(friendly(err), "bad"); });
+    });
+  }
+
+  /* ---------- change PIN ---------- */
+  $("#pin-change").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var f = e.target;
+    var oldPin = f.elements.old.value.trim();
+    var neo = f.elements.neo.value.trim();
+    if (!/^\d{6}$/.test(neo)) return toast("รหัสใหม่ต้องเป็นตัวเลข 6 หลัก", "bad");
+
+    window.DB.rpc("admin_set_pin", { p_pin: oldPin, p_new_pin: neo })
+      .then(function () {
+        f.reset();
+        PIN = neo;
+        try { sessionStorage.setItem(SKEY, neo); } catch (err) {}
+        toast("เปลี่ยนรหัสเรียบร้อย");
+      })
+      .catch(function (err) { toast(friendly(err), "bad"); });
+  });
+
+  /* ---------- boot ---------- */
+  if (!window.DB || !window.DB.ready) {
+    $("#pin-msg").textContent = "ยังไม่ได้ตั้งค่า Supabase — รัน tools/make_config.py ก่อน";
+    $("#pin-btn").disabled = true;
+  } else {
+    var saved = null;
+    try { saved = sessionStorage.getItem(SKEY); } catch (e) {}
+    if (saved) {
+      window.DB.rpc("admin_check_pin", { p_pin: saved }).then(function (ok) {
+        if (ok === true) { PIN = saved; openDashboard(); }
+        else { try { sessionStorage.removeItem(SKEY); } catch (e) {} }
+      }).catch(function () {});
+    }
+    $("#pin-input").focus();
+  }
+})();
+</script>
+</body>
+</html>
